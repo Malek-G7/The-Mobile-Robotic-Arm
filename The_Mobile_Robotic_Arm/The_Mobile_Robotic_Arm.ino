@@ -4,6 +4,8 @@
 #include <ESPmDNS.h>
 #include <ESP32Servo.h>
 #include "Ultrasonic.h"
+#include "Arduino.h"
+#include <car.h>
 
  
 hw_timer_t * timer = NULL; // a pointer to a variable of type hw_timer_t
@@ -16,17 +18,16 @@ void IRAM_ATTR onTimer() {
  
 }
 
+//// dc motors
+const int e1 = 25; // Right motor speed control
+const int m1 = 26; // right motor direction control
+const int e2 = 27; //left motor speed control
+const int m2 = 14;// left motor direction control
 
 Servo myservoV ;// vertical servo 
 Servo myservoH; // horizontal servo
 Servo myservoGrabber; // grabber servo
-
-
-// dc motors
-const int E1 = 25; // Right motor speed control
-const int M1 = 26; // right motor direction control
-const int E2 = 27; //left motor speed control
-const int M2 = 14;// left motor direction control
+car RoboCar(e1,m1,e2,m2);
 
 
 int speed = 255; // speed of car
@@ -310,37 +311,37 @@ void getTheTemp() {
 void moveForward() {
   Serial.println("Got the forward command");
   server.send(200, "text/plain", "Moving forward!");
-  Forward(speed);
+  RoboCar.Forward(speed);
 }
 void moveForwardL() {
   Serial.println("Got the forward left command");
   server.send(200, "text/plain", "Moving forward left!");
-  forwardLeft(speed);
+  RoboCar.forwardLeft(speed);
 }
 void moveForwardR() {
   Serial.println("Got the forward right command");
   server.send(200, "text/plain", "Moving forward right!");
-  forwardRight(speed);
+  RoboCar.forwardRight(speed);
 }
 void STOP() {
   Serial.println("Got the stop command");
   server.send(200, "text/plain", "stopping!");
-  Forward(0);
+  RoboCar.Forward(0);
 }
 void moveBackward() {
   Serial.println("Got the backward command");
   server.send(200, "text/plain", "moving backward!");
-  Backward(speed);
+  RoboCar.Backward(speed);
 }
 void moveBackwardL() {
   Serial.println("Got the backward left command");
   server.send(200, "text/plain", "moving backward left!");
-  backwardLeft(speed);
+  RoboCar.backwardLeft(speed);
 }
 void moveBackwardR() {
   Serial.println("Got the backward right command");
   server.send(200, "text/plain", "moving backward right!");
-  backwardRight(speed);
+  RoboCar.backwardRight(speed);
 }
 void closeClaw() {
   Serial.println("Got the close claw command");
@@ -440,8 +441,8 @@ Serial.println("MDNS responder started");
   myservoV.attach(32);
   myservoGrabber.attach(4);
   myservoH.attach(5);
-  pinMode(M1, OUTPUT);
-  pinMode(M2, OUTPUT);
+//  pinMode(M1, OUTPUT);
+  //pinMode(M2, OUTPUT);
 }
 
 void loop(void) {
